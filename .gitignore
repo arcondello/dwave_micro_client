@@ -1,4 +1,0 @@
-*.pyc
-__pycache__/
-.coverage
-docs/.doctrees
