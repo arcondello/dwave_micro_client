@@ -1,0 +1,855 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>dwave_micro_client &mdash; Python  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Python  documentation" href="#"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="#" class="icon icon-home"> Python
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">dwave_micro_client</a><ul>
+<li><a class="reference internal" href="#configuration">Configuration</a></li>
+<li><a class="reference internal" href="#classes">Classes</a></li>
+<li><a class="reference internal" href="#error-classes">Error Classes</a></li>
+<li><a class="reference internal" href="#dwave-sapi2-compatibility"><code class="docutils literal"><span class="pre">dwave_sapi2</span></code> Compatibility</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Python</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#">Docs</a> &raquo;</li>
+        
+      <li>dwave_micro_client</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-dwave_micro_client">
+<span id="dwave-micro-client"></span><h1>dwave_micro_client<a class="headerlink" href="#module-dwave_micro_client" title="Permalink to this headline">¶</a></h1>
+<p>An implementation of the REST API exposed by D-Wave Solver API (SAPI) servers.</p>
+<p>This API lets you submit an Ising model and receive samples from a distribution over the model
+as defined by the solver you have selected.</p>
+<blockquote>
+<div><ul class="simple">
+<li>The SAPI servers provide authentication, queuing, and scheduling services, and
+provide a network interface to the solvers.</li>
+<li>A solver is a resource that can sample from a discrete quadratic model.</li>
+<li>This package implements the REST interface these servers provide.</li>
+</ul>
+</div></blockquote>
+<p>An example using the client:</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">dwave_micro_client</span>
+<span class="kn">import</span> <span class="nn">random</span>
+
+<span class="c1"># Connect using explicit connection information</span>
+<span class="n">con</span> <span class="o">=</span> <span class="n">dwave_micro_client</span><span class="o">.</span><span class="n">Connection</span><span class="p">(</span><span class="s1">&#39;https://sapi-url&#39;</span><span class="p">,</span> <span class="s1">&#39;token-string&#39;</span><span class="p">)</span>
+
+<span class="c1"># Load a solver by name</span>
+<span class="n">solver</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_solver</span><span class="p">(</span><span class="s1">&#39;test-solver&#39;</span><span class="p">)</span>
+
+<span class="c1"># Build a random Ising model on +1, -1. Build it to exactly fit the graph the solver provides</span>
+<span class="n">linear</span> <span class="o">=</span> <span class="p">{</span><span class="n">index</span><span class="p">:</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">solver</span><span class="o">.</span><span class="n">nodes</span><span class="p">}</span>
+<span class="n">quad</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">solver</span><span class="o">.</span><span class="n">undirected_edges</span><span class="p">}</span>
+
+<span class="c1"># Send the problem for sampling, include a solver specific parameter &#39;num_reads&#39;</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">sample_ising</span><span class="p">(</span><span class="n">linear</span><span class="p">,</span> <span class="n">quad</span><span class="p">,</span> <span class="n">num_reads</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># Print out the first sample</span>
+<span class="k">print</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</td></tr></table></div>
+<dl class="docutils">
+<dt>Rough workflow within the SAPI server:</dt>
+<dd><ol class="first last arabic simple">
+<li>Submitted problems enter an input queue. Each user has an input queue per solver.</li>
+<li>Drawing from all input queues for a solver, problems are scheduled.</li>
+<li>Results of the server are cached for retrieval by the client.</li>
+</ol>
+</dd>
+</dl>
+<p>By default all sampling requests will be processed asynchronously. Reading results from
+any future object is a blocking operation.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># We can submit several sample requests without blocking</span>
+<span class="c1"># (In this specific case we could accomplish the same thing by increasing &#39;num_reads&#39;)</span>
+<span class="n">futures</span> <span class="o">=</span> <span class="p">[</span><span class="n">solver</span><span class="o">.</span><span class="n">sample_ising</span><span class="p">(</span><span class="n">linear</span><span class="p">,</span> <span class="n">quad</span><span class="p">,</span> <span class="n">num_reads</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>
+
+<span class="c1"># We can check if a set of samples are ready without blocking</span>
+<span class="k">print</span><span class="p">(</span><span class="n">futures</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">done</span><span class="p">())</span>
+
+<span class="c1"># We can wait on a single future</span>
+<span class="n">futures</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+
+<span class="c1"># Or we can wait on several futures</span>
+<span class="n">dwave_micro_client</span><span class="o">.</span><span class="n">Future</span><span class="o">.</span><span class="n">wait_multiple</span><span class="p">(</span><span class="n">futures</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<div class="section" id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
+<p>To store your connection information in a configuration file create a text file named <code class="docutils literal"><span class="pre">.dwrc</span></code> in your home directory.
+The default configuration format is a modified CSV where the first comma is replaced with a bar character ‘|’.</p>
+<p>The columns are:</p>
+<p><code class="docutils literal"><span class="pre">connection</span> <span class="pre">label</span> <span class="pre">|</span> <span class="pre">server</span> <span class="pre">url,</span> <span class="pre">token,</span> <span class="pre">proxy</span> <span class="pre">url,</span> <span class="pre">default</span> <span class="pre">solver</span> <span class="pre">name</span></code></p>
+<p>Where everything after the token is optional.</p>
+<p>Once the configuration file is created, a connection object created without any
+parameters will use the first row of the configuration file.</p>
+<p>For the example, with the configuration file:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">connection</span><span class="o">-</span><span class="n">a</span><span class="o">|</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">one</span><span class="o">.</span><span class="n">com</span><span class="p">,</span><span class="n">token</span><span class="o">-</span><span class="n">one</span>
+<span class="n">connection</span><span class="o">-</span><span class="n">b</span><span class="o">|</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">two</span><span class="o">.</span><span class="n">com</span><span class="p">,</span><span class="n">token</span><span class="o">-</span><span class="n">two</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">con</span> <span class="o">=</span> <span class="n">dwave_micro_client</span><span class="o">.</span><span class="n">Connection</span><span class="p">()</span>
+<span class="go"># Will try to connect with the url `https://one.com` and the token `token-one`.</span>
+</pre></div>
+</div>
+<p>It is also possible to create the connection using only the label or url, and the token will be retrived from the configuration.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">con</span> <span class="o">=</span> <span class="n">dwave_micro_client</span><span class="o">.</span><span class="n">Connection</span><span class="p">(</span><span class="s1">&#39;connection-a&#39;</span><span class="p">)</span>
+<span class="go"># Will try to connect with the url `https://one.com` and the token `token-one`.</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">con</span> <span class="o">=</span> <span class="n">dwave_micro_client</span><span class="o">.</span><span class="n">Connection</span><span class="p">(</span><span class="s1">&#39;https://two.com&#39;</span><span class="p">)</span>
+<span class="go"># Will try to connect with the url `https://two.com` and the token `token-two`.</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="dwave_micro_client.Connection">
+<em class="property">class </em><code class="descclassname">dwave_micro_client.</code><code class="descname">Connection</code><span class="sig-paren">(</span><em>url=None</em>, <em>token=None</em>, <em>proxies=None</em>, <em>permissive_ssl=False</em><span class="sig-paren">)</span><a class="headerlink" href="#dwave_micro_client.Connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect to a SAPI server to expose the solvers that the server advertises.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>url</strong> (<em>str</em>) – URL of the SAPI server.</li>
+<li><strong>token</strong> (<em>str</em>) – Authentication token from the SAPI server.</li>
+<li><strong>proxies</strong> (<em>dict</em>) – Mapping from the connection scheme (http[s]) to the proxy server address.</li>
+<li><strong>permissive_ssl</strong> (<em>boolean; false by default</em>) – Disables SSL verification.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="dwave_micro_client.Connection.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dwave_micro_client.Connection.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a clean shutdown.</p>
+<p>Wait for all the currently scheduled work to finish, kill the workers,
+and close the connection pool. Assumes no one is submitting more work
+while the connection is closing.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dwave_micro_client.Connection.get_solver">
+<code class="descname">get_solver</code><span class="sig-paren">(</span><em>name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#dwave_micro_client.Connection.get_solver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the configuration for a single solver.</p>
+<p>To get specific solver data: <code class="docutils literal"><span class="pre">GET</span> <span class="pre">/solvers/remote/{solver_name}/</span></code></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>str</em>) – Id of the requested solver. None will return the default solver.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><a class="reference internal" href="#dwave_micro_client.Solver" title="dwave_micro_client.Solver"><code class="xref py py-obj docutils literal"><span class="pre">Solver</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dwave_micro_client.Connection.solver_names">
+<code class="descname">solver_names</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dwave_micro_client.Connection.solver_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>List all the solvers this connection can provide, and load the data about the solvers.</p>
+<p>To get all solver data: <code class="docutils literal"><span class="pre">GET</span> <span class="pre">/solvers/remote/</span></code></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">list of str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dwave_micro_client.Solver">
+<em class="property">class </em><code class="descclassname">dwave_micro_client.</code><code class="descname">Solver</code><span class="sig-paren">(</span><em>connection</em>, <em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#dwave_micro_client.Solver" title="Permalink to this definition">¶</a></dt>
+<dd><p>A solver enables sampling from an Ising model.</p>
+<p>Get solver objects by calling get_solver(name) on a connection object.</p>
+<p>The solver has responsibilty for:
+- Encoding problems submitted
+- Checking the submitted parameters
+- Add problems to the Connection’s submission queue</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>connection</strong> (<cite>Connection</cite>) – Connection through which the solver is accessed.</li>
+<li><strong>data</strong> – Data from the server describing this solver.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="dwave_micro_client.Solver.check_problem">
+<code class="descname">check_problem</code><span class="sig-paren">(</span><em>linear</em>, <em>quadratic</em><span class="sig-paren">)</span><a class="headerlink" href="#dwave_micro_client.Solver.check_problem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if an Ising model matches the graph provided by the solver.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>linear</strong> (<em>list/dict</em>) – Linear terms of the model (h).</li>
+<li><strong>quadratic</strong> (<em>dict of</em><em> (</em><em>int</em><em>, </em><em>int</em>) – float): Quadratic terms of the model (J).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">boolean</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dwave_micro_client.Solver.couplers">
+<code class="descname">couplers</code><a class="headerlink" href="#dwave_micro_client.Solver.couplers" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>The edges in this solver’s graph, every edge will be present as (a, b) and (b, a)</em> – set(tuple(int, int))</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dwave_micro_client.Solver.edges">
+<code class="descname">edges</code><a class="headerlink" href="#dwave_micro_client.Solver.edges" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>The edges in this solver’s graph, every edge will be present as (a, b) and (b, a)</em> – set(tuple(int, int))</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dwave_micro_client.Solver.nodes">
+<code class="descname">nodes</code><a class="headerlink" href="#dwave_micro_client.Solver.nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>The nodes in this solver’s graph</em> – set(int)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dwave_micro_client.Solver.parameters">
+<code class="descname">parameters</code><a class="headerlink" href="#dwave_micro_client.Solver.parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>The set of extra parameters this solver will accept in sample_ising or sample_qubo</em> – dict</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dwave_micro_client.Solver.properties">
+<code class="descname">properties</code><a class="headerlink" href="#dwave_micro_client.Solver.properties" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Properties of this solver the server presents</em> – dict</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dwave_micro_client.Solver.retrieve_problem">
+<code class="descname">retrieve_problem</code><span class="sig-paren">(</span><em>id_</em><span class="sig-paren">)</span><a class="headerlink" href="#dwave_micro_client.Solver.retrieve_problem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resume polling for a problem previously submitted.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>id</strong> – Identification of the query.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">obj: <cite>Future</cite></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dwave_micro_client.Solver.return_matrix">
+<code class="descname">return_matrix</code><a class="headerlink" href="#dwave_micro_client.Solver.return_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>When True the solution data will be returned as numpy matrices</em> – False</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dwave_micro_client.Solver.sample_ising">
+<code class="descname">sample_ising</code><span class="sig-paren">(</span><em>linear</em>, <em>quadratic</em>, <em>**params</em><span class="sig-paren">)</span><a class="headerlink" href="#dwave_micro_client.Solver.sample_ising" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw samples from the provided Ising model.</p>
+<p>To submit a problem: <code class="docutils literal"><span class="pre">POST</span> <span class="pre">/problems/</span></code></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>linear</strong> (<em>list/dict</em>) – Linear terms of the model (h).</li>
+<li><strong>quadratic</strong> (<em>dict of</em><em> (</em><em>int</em><em>, </em><em>int</em>) – float): Quadratic terms of the model (J).</li>
+<li><strong>**params</strong> – Parameters for the sampling method, specified per solver.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#dwave_micro_client.Future" title="dwave_micro_client.Future"><code class="xref py py-obj docutils literal"><span class="pre">Future</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dwave_micro_client.Solver.sample_qubo">
+<code class="descname">sample_qubo</code><span class="sig-paren">(</span><em>qubo</em>, <em>**params</em><span class="sig-paren">)</span><a class="headerlink" href="#dwave_micro_client.Solver.sample_qubo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw samples from the provided QUBO.</p>
+<p>To submit a problem: <code class="docutils literal"><span class="pre">POST</span> <span class="pre">/problems/</span></code></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>qubo</strong> (<em>dict of</em><em> (</em><em>int</em><em>, </em><em>int</em>) – float): Terms of the model.</li>
+<li><strong>**params</strong> – Parameters for the sampling method, specified per solver.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#dwave_micro_client.Future" title="dwave_micro_client.Future"><code class="xref py py-obj docutils literal"><span class="pre">Future</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dwave_micro_client.Solver.undirected_edges">
+<code class="descname">undirected_edges</code><a class="headerlink" href="#dwave_micro_client.Solver.undirected_edges" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>The edges in this solver’s graph, each edge will only be represented once</em> – set(tuple(int, int))</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dwave_micro_client.Solver.variables">
+<code class="descname">variables</code><a class="headerlink" href="#dwave_micro_client.Solver.variables" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>The nodes in this solver’s graph</em> – set(int)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dwave_micro_client.Future">
+<em class="property">class </em><code class="descclassname">dwave_micro_client.</code><code class="descname">Future</code><span class="sig-paren">(</span><em>solver</em>, <em>id_</em>, <em>return_matrix</em>, <em>submission_data</em><span class="sig-paren">)</span><a class="headerlink" href="#dwave_micro_client.Future" title="Permalink to this definition">¶</a></dt>
+<dd><p>An object for a pending SAPI call.</p>
+<p>Waits for a request to complete and parses the message returned.
+The future will be block to resolve when any data value is accessed.
+The method <a class="reference internal" href="#dwave_micro_client.Future.done" title="dwave_micro_client.Future.done"><code class="xref py py-meth docutils literal"><span class="pre">done()</span></code></a> can be used to query for resolution without blocking.
+<a class="reference internal" href="#dwave_micro_client.Future.wait" title="dwave_micro_client.Future.wait"><code class="xref py py-meth docutils literal"><span class="pre">wait()</span></code></a>, and <a class="reference internal" href="#dwave_micro_client.Future.wait_multiple" title="dwave_micro_client.Future.wait_multiple"><code class="xref py py-meth docutils literal"><span class="pre">wait_multiple()</span></code></a> can be used to block for a variable
+number of jobs for a given ammount of time.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Only constructed by <a class="reference internal" href="#dwave_micro_client.Solver" title="dwave_micro_client.Solver"><code class="xref py py-obj docutils literal"><span class="pre">Solver</span></code></a> objects.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>solver</strong> – The solver that is going to fulfil this future.</li>
+<li><strong>id</strong> – Identification of the query we are waiting for. (May be None and filled in later.)</li>
+<li><strong>return_matrix</strong> – Request return values as numpy matrices.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="dwave_micro_client.Future.cancel">
+<code class="descname">cancel</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dwave_micro_client.Future.cancel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Try to cancel the problem corresponding to this result.</p>
+<p>An effort will be made to prevent the execution of the corresponding problem
+but there are no guarantees.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dwave_micro_client.Future.done">
+<code class="descname">done</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dwave_micro_client.Future.done" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test whether a response has arrived.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dwave_micro_client.Future.energies">
+<code class="descname">energies</code><a class="headerlink" href="#dwave_micro_client.Future.energies" title="Permalink to this definition">¶</a></dt>
+<dd><p>The energy buffer, blocks if needed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">list or numpy matrix of doubles.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dwave_micro_client.Future.id">
+<code class="descname">id</code><a class="headerlink" href="#dwave_micro_client.Future.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>The id the server will use to identify this problem, None until the id is actually known</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dwave_micro_client.Future.occurrences">
+<code class="descname">occurrences</code><a class="headerlink" href="#dwave_micro_client.Future.occurrences" title="Permalink to this definition">¶</a></dt>
+<dd><p>The occurrences buffer, blocks if needed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">list or numpy matrix of doubles.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dwave_micro_client.Future.remote_status">
+<code class="descname">remote_status</code><a class="headerlink" href="#dwave_micro_client.Future.remote_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Status flag most recently returned by the server</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dwave_micro_client.Future.samples">
+<code class="descname">samples</code><a class="headerlink" href="#dwave_micro_client.Future.samples" title="Permalink to this definition">¶</a></dt>
+<dd><p>The state buffer, blocks if needed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">list of lists or numpy matrix.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dwave_micro_client.Future.time_received">
+<code class="descname">time_received</code><a class="headerlink" href="#dwave_micro_client.Future.time_received" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>datetime</cite> corriesponding to the time when the problem was accepted by the server (None before then)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dwave_micro_client.Future.time_solved">
+<code class="descname">time_solved</code><a class="headerlink" href="#dwave_micro_client.Future.time_solved" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>datetime</cite> corriesponding to the time when the problem was completed by the server (None before then)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dwave_micro_client.Future.timing">
+<code class="descname">timing</code><a class="headerlink" href="#dwave_micro_client.Future.timing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Information about the time the solver took in operation.</p>
+<p>The response is a mapping from string keys to numeric values.
+The exact keys used depend on the solver.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dwave_micro_client.Future.wait">
+<code class="descname">wait</code><span class="sig-paren">(</span><em>timeout=None</em><span class="sig-paren">)</span><a class="headerlink" href="#dwave_micro_client.Future.wait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait for the results to be available.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timeout</strong> (<em>float</em>) – Maximum number of seconds to wait</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="dwave_micro_client.Future.wait_multiple">
+<em class="property">static </em><code class="descname">wait_multiple</code><span class="sig-paren">(</span><em>futures</em>, <em>min_done=None</em>, <em>timeout=inf</em><span class="sig-paren">)</span><a class="headerlink" href="#dwave_micro_client.Future.wait_multiple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait for multiple Future objects to complete.</p>
+<p>Python doesn’t provide a multi-wait, but we can jury rig something reasonably
+efficent using an event object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>futures</strong> (<em>list of Future</em>) – list of objects to wait on</li>
+<li><strong>min_done</strong> (<em>int</em>) – Stop waiting when this many results are ready</li>
+<li><strong>timeout</strong> (<em>float</em>) – Maximum number of seconds to wait</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True if the minimum number of results have been reached.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">boolean</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="error-classes">
+<h2>Error Classes<a class="headerlink" href="#error-classes" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="dwave_micro_client.SolverFailureError">
+<em class="property">class </em><code class="descclassname">dwave_micro_client.</code><code class="descname">SolverFailureError</code><a class="headerlink" href="#dwave_micro_client.SolverFailureError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">Exception</span></code></p>
+<p>An exception raised when there is a remote failure calling a solver.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="dwave_micro_client.CanceledFutureError">
+<em class="property">class </em><code class="descclassname">dwave_micro_client.</code><code class="descname">CanceledFutureError</code><a class="headerlink" href="#dwave_micro_client.CanceledFutureError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">Exception</span></code></p>
+<p>An exception raised when code tries to read from a canceled future.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="dwave-sapi2-compatibility">
+<h2><code class="docutils literal"><span class="pre">dwave_sapi2</span></code> Compatibility<a class="headerlink" href="#dwave-sapi2-compatibility" title="Permalink to this headline">¶</a></h2>
+<p>Some classes introduced to allow some limited compatibility with code that makes
+simple use of features from <code class="docutils literal"><span class="pre">dwave_sapi2.core</span></code> and <code class="docutils literal"><span class="pre">dwave_sapi2.remote</span></code>.
+Not all the features of those modules are exposed, only those that have
+a direct analog in this package.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1">#from dwave_sapi2.remote import RemoteConnection</span>
+<span class="kn">from</span> <span class="nn">dwave_micro_client.remote</span> <span class="kn">import</span> <span class="n">RemoteConnection</span>
+<span class="c1">#from dwave_sapi2.core import solve_ising</span>
+<span class="kn">from</span> <span class="nn">dwave_micro_client.core</span> <span class="kn">import</span> <span class="n">solve_ising</span>
+
+<span class="c1"># get a solver</span>
+<span class="n">connection</span> <span class="o">=</span> <span class="n">RemoteConnection</span><span class="p">(</span><span class="n">sapi_url</span><span class="p">,</span> <span class="n">sapi_token</span><span class="p">)</span>
+<span class="n">solver</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_solver</span><span class="p">(</span><span class="n">solver_name</span><span class="p">)</span>
+
+<span class="c1"># solve ising problem</span>
+<span class="n">h</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">J</span> <span class="o">=</span> <span class="p">{(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span> <span class="o">-</span><span class="mi">10</span><span class="p">}</span>
+
+<span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;num_reads&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;num_spin_reversal_transforms&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+<span class="n">answer</span> <span class="o">=</span> <span class="n">solve_ising</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">J</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">answer</span><span class="p">[</span><span class="s1">&#39;energies&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">answer</span><span class="p">[</span><span class="s1">&#39;solutions&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+<dl class="class">
+<dt id="dwave_micro_client.core">
+<em class="property">class </em><code class="descclassname">dwave_micro_client.</code><code class="descname">core</code><a class="headerlink" href="#dwave_micro_client.core" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">module</span></code></p>
+<p>Try to reproduce the interface of the dwave_sapi2.core module.</p>
+<dl class="staticmethod">
+<dt id="dwave_micro_client.core.async_solve_ising">
+<em class="property">static </em><code class="descname">async_solve_ising</code><span class="sig-paren">(</span><em>solver</em>, <em>h</em>, <em>J</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#dwave_micro_client.core.async_solve_ising" title="Permalink to this definition">¶</a></dt>
+<dd><p>Forward a sampling problem to solver.solve_ising and wrap the result with a different interface.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="dwave_micro_client.core.async_solve_qubo">
+<em class="property">static </em><code class="descname">async_solve_qubo</code><span class="sig-paren">(</span><em>solver</em>, <em>Q</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#dwave_micro_client.core.async_solve_qubo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Forward a sampling problem to solver.solve_qubo and wrap the result with a different interface.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="dwave_micro_client.core.await_completion">
+<em class="property">static </em><code class="descname">await_completion</code><span class="sig-paren">(</span><em>submitted_problems</em>, <em>min_done</em>, <em>timeout</em><span class="sig-paren">)</span><a class="headerlink" href="#dwave_micro_client.core.await_completion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait for a collection of problem handles to finish.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="dwave_micro_client.core.solve_ising">
+<em class="property">static </em><code class="descname">solve_ising</code><span class="sig-paren">(</span><em>solver</em>, <em>h</em>, <em>J</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#dwave_micro_client.core.solve_ising" title="Permalink to this definition">¶</a></dt>
+<dd><p>Forward a sampling problem to solver.sample_ising.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="dwave_micro_client.core.solve_qubo">
+<em class="property">static </em><code class="descname">solve_qubo</code><span class="sig-paren">(</span><em>solver</em>, <em>Q</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#dwave_micro_client.core.solve_qubo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Forward a sampling problem to solver.sample_qubo.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dwave_micro_client.remote">
+<em class="property">class </em><code class="descclassname">dwave_micro_client.</code><code class="descname">remote</code><a class="headerlink" href="#dwave_micro_client.remote" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">module</span></code></p>
+<p>Try to reproduce the interface of the dwave_sapi2.remote module.</p>
+<dl class="attribute">
+<dt id="dwave_micro_client.remote.RemoteConnection">
+<code class="descname">RemoteConnection</code><a class="headerlink" href="#dwave_micro_client.remote.RemoteConnection" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#dwave_micro_client.Connection" title="dwave_micro_client.Connection"><code class="xref py py-class docutils literal"><span class="pre">Connection</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dwave_micro_client.AsyncInterfaceWrapper">
+<em class="property">class </em><code class="descclassname">dwave_micro_client.</code><code class="descname">AsyncInterfaceWrapper</code><span class="sig-paren">(</span><em>handle</em><span class="sig-paren">)</span><a class="headerlink" href="#dwave_micro_client.AsyncInterfaceWrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>An incomplete compatibility layer between the async interface of this module and dwave_sapi2.</p>
+<dl class="method">
+<dt id="dwave_micro_client.AsyncInterfaceWrapper.cancel">
+<code class="descname">cancel</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dwave_micro_client.AsyncInterfaceWrapper.cancel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cancel a submitted problem.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dwave_micro_client.AsyncInterfaceWrapper.done">
+<code class="descname">done</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dwave_micro_client.AsyncInterfaceWrapper.done" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine whether the submitted problem has finished or not.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dwave_micro_client.AsyncInterfaceWrapper.result">
+<code class="descname">result</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dwave_micro_client.AsyncInterfaceWrapper.result" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the results of the request.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dwave_micro_client.AsyncInterfaceWrapper.retry">
+<code class="descname">retry</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dwave_micro_client.AsyncInterfaceWrapper.retry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempt to retry the problem.</p>
+<p>In dwave_sapi2 this only retries if particular kinds of errors had
+occurred. Here retry always results in a resubmission regardless of state.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dwave_micro_client.AsyncInterfaceWrapper.status">
+<code class="descname">status</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dwave_micro_client.AsyncInterfaceWrapper.status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a dictionary containing information about the progress of the problem.</p>
+<p>This is a fairly minimal wrapper that doesn’t reach all the possible states
+of the original method, but is compatable.</p>
+<p>See the dwave_sapi2 documentation for details.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright D-Wave Systems Inc..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
