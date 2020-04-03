@@ -203,6 +203,9 @@ class Submission(_QueryTest):
             response = solver.sample_bqm(bqm, num_reads=100)
             sampleset = response.sampleset
 
+            self.assertEqual(sampleset.wait_id(), sampleset.info['problem_id'])
+            self.assertEqual(response.id, sampleset.info['problem_id'])
+
             # Did we get the right number of samples?
             self.assertEqual(100, sum(response.occurrences))
 
@@ -223,6 +226,9 @@ class Submission(_QueryTest):
             bqm = dimod.BinaryQuadraticModel.from_qubo(quad)
             response = solver.sample_bqm(bqm, num_reads=100)
             sampleset = response.sampleset
+
+            self.assertEqual(sampleset.wait_id(), sampleset.info['problem_id'])
+            self.assertEqual(response.id, sampleset.info['problem_id'])
 
             # Did we get the right number of samples?
             self.assertEqual(100, sum(response.occurrences))
